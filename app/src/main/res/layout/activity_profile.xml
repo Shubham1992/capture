@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.PhotographerProfileActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:fitsSystemWindows="true"
+
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:background="@drawable/wedding"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:gravity="center"
+                        >
+
+
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:background="@color/white"
+                            android:elevation="5dp">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Shubham Goel"
+                                android:paddingLeft="10dp"
+                                android:textSize="18dp"
+                                android:gravity="center"
+                                android:layout_marginTop="40dp"
+
+                                android:textColor="#393939"
+                                />
+
+                            <RatingBar
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_margin="15dp"
+                                android:numStars="5"
+                                android:layout_gravity="center"
+                                android:rating="5"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginTop="10dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginLeft="10dp"
+                                    android:textColor="@color/black"
+                                    android:text="Rs. 20000"
+                                    />
+
+                                <Button
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="35dp"
+                                    android:text="Book"
+                                    android:background="@drawable/bg_button_state"
+                                    android:layout_gravity="right"
+                                    android:textSize="12sp"
+                                    android:textColor="@color/colorPrimary"
+                                    android:layout_marginRight="10dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/logo"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/profile"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="25dp"
+                    />
+            </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                android:title="some title"
+
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+            </android.support.v7.widget.Toolbar>
+
+
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/section_label"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F6F7F9"
+        
+
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>

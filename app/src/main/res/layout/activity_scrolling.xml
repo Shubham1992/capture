@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<android.support.design.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+   >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:theme="@style/AppTheme.AppBarOverlay">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+d
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/toolbar"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:id="@+id/imgPhotographer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/pgrqapher"
+                        android:padding="16dp"
+
+
+                        />
+                    <ImageView
+                        android:id="@+id/imgPictures"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:src="@drawable/landscape"
+                        android:alpha=".5"
+                        android:padding="16dp"
+                        />
+
+
+                </LinearLayout>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/sliding_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/white"
+                    app:tabTextColor="#888"
+                    app:tabSelectedTextColor="@color/colorPrimary"
+                    app:tabGravity="center"
+                    app:tabMode="scrollable"
+
+                    app:tabIndicatorColor="#fff"
+                    app:tabIndicatorHeight="3dp"
+                    />
+                </LinearLayout>
+
+            </android.support.design.widget.AppBarLayout>
+
+
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/container"
+                android:background="#ddd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <GridView
+                android:id="@+id/grid_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:numColumns="auto_fit"
+                android:columnWidth="90dp"
+                android:horizontalSpacing="5dp"
+                android:verticalSpacing="5dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_margin="16dp"
+              >
+
+            </GridView>
+        </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+
+
+    </FrameLayout>
