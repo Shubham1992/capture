@@ -63,7 +63,7 @@
                 android:background="@drawable/bg_button_state"
                 android:layout_gravity="right"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:textStyle="normal"
                 android:textColor="@color/colorPrimary"
                 android:layout_marginRight="10dp"/>
 
@@ -79,13 +79,19 @@
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:gravity="center"
-                android:padding="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+
+                android:paddingLeft="10dp"
                 />
     <TextView
+        android:id="@+id/gotosignup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SignUp"
-        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:textSize="15sp"/>

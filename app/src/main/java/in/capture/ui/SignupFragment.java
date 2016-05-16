@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import in.capture.R;
 
@@ -12,7 +13,7 @@ import in.capture.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SignupFragment.OnFragmentInteractionListener} interface
+ *  interface
  * to handle interaction events.
  * Use the {@link SignupFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -26,6 +27,7 @@ public class SignupFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView gotologin;
 
 
     public SignupFragment() {
@@ -63,9 +65,24 @@ public class SignupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_signup, container, false);
+        View view = inflater.inflate(R.layout.fragment_signup, container, false);
+
+        gotologin = (TextView) view.findViewById(R.id.gotologin);
+        gotologin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((OnClickSignup)getActivity()).gotologin();
+            }
+        });
+        return view;
     }
 
+    public interface OnClickSignup
+    {
+        void gotologin();
+
+    }
 
 
 }

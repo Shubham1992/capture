@@ -27,7 +27,8 @@ public class PhotographerProfileActivity extends AppCompatActivity {
         RecyclerView rv = (RecyclerView) findViewById(R.id.section_label);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        rv.setLayoutManager(layoutManager);RecyclerViewAdapterProfile recyclerViewAdapter = new RecyclerViewAdapterProfile(PhotographerProfileActivity.this);
+        rv.setLayoutManager(layoutManager);
+        RecyclerViewAdapterProfile recyclerViewAdapter = new RecyclerViewAdapterProfile(PhotographerProfileActivity.this);
         rv.setAdapter(recyclerViewAdapter);
 
     }

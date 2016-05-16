@@ -16,23 +16,25 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import in.capture.ImageAdapter;
 import in.capture.R;
 import in.capture.RecyclerViewAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnClickLogin, SignupFragment.OnClickSignup{
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     public  TabLayout tabLayout;
-    ImageView imgPgraph, imgphoto;
+    ImageView imgPgraph, imgphoto, imgUser;
     private GridView gridView;
+    private LinearLayout signupfragContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
+        setContentView(R.layout.main_activity);
 
 
 
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
         imgPgraph = (ImageView) findViewById(R.id.imgPhotographer);
         imgphoto = (ImageView) findViewById(R.id.imgPictures);
+        imgUser = (ImageView) findViewById(R.id.imgUser);
+
+        signupfragContainer = (LinearLayout) findViewById(R.id.signupfragContainer);
 
         imgPgraph.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,9 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
                 imgPgraph.setAlpha(1.0f);
                 imgphoto.setAlpha(0.5f);
+                imgUser.setAlpha(0.5f);
+
                 mViewPager.setVisibility(View.VISIBLE);
                 tabLayout.setVisibility(View.VISIBLE);
                 gridView.setVisibility(View.GONE);
+                signupfragContainer.setVisibility(View.GONE);
             }
         });
 
@@ -64,12 +72,30 @@ public class MainActivity extends AppCompatActivity {
 
                 imgphoto.setAlpha(1.0f);
                 imgPgraph.setAlpha(0.5f);
+                imgUser.setAlpha(0.5f);
 
                 mViewPager.setVisibility(View.GONE);
                 tabLayout.setVisibility(View.GONE);
+                signupfragContainer.setVisibility(View.GONE);
                 gridView.setVisibility(View.VISIBLE);
                 // Instance of ImageAdapter Class
                 gridView.setAdapter(new ImageAdapter(MainActivity.this));
+            }
+        });
+
+        imgUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                imgUser.setAlpha(1.0f);
+                imgPgraph.setAlpha(0.5f);
+                imgphoto.setAlpha(0.5f);
+
+                mViewPager.setVisibility(View.GONE);
+                tabLayout.setVisibility(View.GONE);
+                gridView.setVisibility(View.GONE);
+                signupfragContainer.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new SignupFragment()).commit();
             }
         });
 
@@ -117,6 +143,16 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void gotosignup() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new SignupFragment()).commit();
+    }
+
+    @Override
+    public void gotologin() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new LoginFragment()).commit();
     }
 
     /**

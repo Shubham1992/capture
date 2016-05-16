@@ -27,8 +27,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.nispok.snackbar.SnackbarManager;
-import com.nispok.snackbar.enums.SnackbarType;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -123,6 +122,11 @@ public class Utils {
         Toast.makeText(c, "No internet connection available",
                 Toast.LENGTH_SHORT).show();
         return false;
+    }
+
+    public static void showToast(String message, Context context)
+    {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -457,38 +461,10 @@ public class Utils {
         }
     }*/
 
-    public  static  void showToast(Context context, String message)
-    {
-        showToast(message, context);
-    }
-    public static void showToast(String message, Context context) {
-       // Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        SnackbarManager.show(
-                com.nispok.snackbar.Snackbar.with(context)
-                        .type(SnackbarType.MULTI_LINE)
-                        .text(message)
-        );
 
 
-    }
-    public static void showIndependentToast(String message, Context context )
-    {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
 
-    /**
-     * <strong>public void showAToast (String st)</strong></br>
-     * this little method displays a toast on the screen.</br>
-     * it checks if a toast is currently visible</br>
-     * if so </br>
-     * ... it "sets" the new text</br>
-     * else</br>
-     * ... it "makes" the new text</br>
-     * and "shows" either or
-     *
-     * @param st the string to be toasted
-     */
 
 
 
@@ -718,18 +694,7 @@ public class Utils {
         }
     }
 
-    public static void showStatusCodeToast(int statusCode, Context context) {
-        switch (statusCode) {
-            case 70:
-            case 80:
-            case 90:
-                Utils.showToast("Connection TimeOut. Try Again.", context);
-                break;
-            case 404:
-                Utils.showToast("Connection TimeOut. Try Again.", context);
-                break;
-        }
-    }
+
 
 
 
