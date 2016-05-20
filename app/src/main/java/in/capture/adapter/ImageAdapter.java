@@ -1,4 +1,4 @@
-package in.capture;
+package in.capture.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
- 
+
+import in.capture.R;
+
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
  
