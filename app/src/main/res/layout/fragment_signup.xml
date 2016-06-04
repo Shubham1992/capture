@@ -1,4 +1,4 @@
-<LinearLayout android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_margin="40dp">
+        android:layout_margin="30dp">
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -36,7 +36,7 @@
                         android:id="@+id/input_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="First name"
+                        android:hint="Name"
                         android:textSize="16sp"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -72,6 +72,84 @@
             </android.support.design.widget.TextInputLayout>
 
 
+            <CheckBox
+                android:id="@+id/checkboxIsPhotographer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I am a Photographer"
+                android:layout_marginTop="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:id="@+id/photographerExtras"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="Category"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/colorAccent"/>
+                <Spinner
+                    android:id="@+id/category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                </Spinner>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#888"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/input_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Rates"
+                        android:textSize="16sp"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="State"
+                        android:textColor="@color/colorAccent"/>
+                    <Spinner
+                        android:id="@+id/state"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#888"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -85,9 +163,11 @@
             >
 
             <Button
+                android:id="@+id/btnSignup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sign Up"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_button_state"
                 android:layout_gravity="right"
                 android:textSize="16sp"
@@ -128,4 +208,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</ScrollView>

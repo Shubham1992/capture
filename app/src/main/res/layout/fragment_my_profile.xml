@@ -1,39 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="false"
     tools:context=".ui.PhotographerProfileActivity">
 
-    <FrameLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:background="@drawable/e"
-                android:fitsSystemWindows="true"
-                android:alpha=".8"
-                app:layout_collapseMode="parallax" />
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:paddingTop="0dp"
+        android:background="@color/white"
+        >
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+
+            >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <ImageView
+                        android:id="@+id/coverpic"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:scaleType="centerCrop"
+                        />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:gravity="center"
+                        >
+
+
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="10dp"
+                            android:background="@color/white"
+                            android:elevation="5dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="right">
+                            <ImageView
+                                android:id="@+id/logout"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/dots_black"
+                                android:padding="5dp"
+                                android:alpha=".6"/>
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Shubham Goel"
+                                android:paddingLeft="10dp"
+
+                                android:textSize="18dp"
+                                android:gravity="center"
+                                android:textColor="#393939"
+                                />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center">
+                                <RatingBar
+                                android:id="@+id/rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_marginLeft="8dp"
+                                    android:layout_marginTop="15dp"
+                                    android:layout_marginBottom="15dp"
+                                android:numStars="5"
+                                android:rating="5"/>
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center"
+                                android:layout_marginBottom="10dp">
+                                <TextView
+                                    android:id="@+id/charges"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:layout_marginLeft="10dp"
+                                    android:textColor="@color/black"
+                                    android:text="Rs. 20000"
+                                    android:gravity="center"
+                                    />
+
+
+                            </LinearLayout>
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_button_state">
+                            <TextView
+                                android:id="@+id/tvUploadPic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="15dp"
+                                android:paddingBottom="15dp"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:text="Add a picture"
+                                android:textColor="@color/colorPrimary"/>
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/add"
+                                    android:padding="3dp"
+                                    android:layout_marginRight="80dp"
+                                    android:layout_gravity="center|right"/>
+                            </FrameLayout>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/logo"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
+                    android:id="@+id/profilepic"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/profile"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="45dp"
+                    app:civ_border_color="@color/white"
                     app:civ_border_width="2dp"
-                    app:civ_border_color="@color/white"/>
+                    />
+            </FrameLayout>
 
 
 
-    </FrameLayout>
+
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
 
 
 
@@ -41,11 +180,11 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/section_label"
+        android:id="@+id/rv_portfolio"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F6F7F9"
-        android:layout_marginBottom="50dp"
+
 
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
@@ -53,4 +192,4 @@
 
 
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

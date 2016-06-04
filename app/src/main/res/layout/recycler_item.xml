@@ -15,9 +15,11 @@
         android:orientation="vertical"
         >
         <ImageView
+            android:id="@+id/coverpic"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:background="@drawable/wedding"/>
+            android:scaleType="centerCrop"
+            android:background="@color/white"/>
 
 <LinearLayout
     android:orientation="horizontal"
@@ -37,6 +39,7 @@
         android:padding="10dp"
         >
     <TextView
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Shubham Goel"
@@ -49,6 +52,7 @@
       />
 
       <RatingBar
+          android:id="@+id/vote"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/Widget.AppCompat.RatingBar.Small"
@@ -64,6 +68,7 @@
             android:gravity="center"
             android:layout_marginTop="10dp">
         <TextView
+            android:id="@+id/rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -74,6 +79,7 @@
             />
 
         <Button
+            android:id="@+id/btnbook"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:text="Book"
@@ -91,7 +97,7 @@
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/logo"
+        android:id="@+id/profilepic"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_centerHorizontal="true"
@@ -99,6 +105,8 @@
         android:src="@drawable/profile"
         android:layout_gravity="center"
         android:layout_marginBottom="25dp"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="2dp"
         />
 </FrameLayout>
 

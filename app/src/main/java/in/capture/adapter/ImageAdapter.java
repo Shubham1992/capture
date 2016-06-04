@@ -8,41 +8,39 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
 import in.capture.R;
+import in.capture.model.PhotoModel;
+import in.capture.utils.Constants;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
- 
-    // Keep all Images in array
-    public Integer[] mThumbIds = {
-            R.drawable.a, R.drawable.c,
-            R.drawable.b, R.drawable.d,
-            R.drawable.f, R.drawable.e,
-            R.drawable.g, R.drawable.h,
-            R.drawable.i, R.drawable.j,
-            R.drawable.k, R.drawable.l,
-            R.drawable.m, R.drawable.a,
-            R.drawable.b
-    };
- 
+    private ArrayList<PhotoModel> photoModels;
     // Constructor
-    public ImageAdapter(Context c){
+    public ImageAdapter(Context c, ArrayList<PhotoModel> photoModels)
+    {
         mContext = c;
+        this.photoModels = photoModels;
     }
  
     @Override
     public int getCount() {
-        return mThumbIds.length;
+        return photoModels.size();
     }
  
     @Override
-    public Object getItem(int position) {
-        return mThumbIds[position];
+    public Object getItem(int position)
+    {
+        return photoModels.get(position);
     }
  
     @Override
-    public long getItemId(int position) {
-        return 0;
+    public long getItemId(int position)
+    {
+        return Integer.parseInt(photoModels.get(position).getId());
     }
  
     @Override
@@ -52,7 +50,9 @@ public class ImageAdapter extends BaseAdapter {
 
 
         ImageView imageView = (ImageView) view.findViewById(R.id.img);
-        imageView.setImageResource(mThumbIds[position]);
+        Picasso.with(mContext).load(Constants.imageBaseUrl+photoModels.get(position).getImage()).into(imageView);
+
+
 
         return view;
     }

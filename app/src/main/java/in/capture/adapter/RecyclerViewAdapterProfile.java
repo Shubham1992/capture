@@ -1,14 +1,13 @@
 package in.capture.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import in.capture.R;
-import in.capture.ui.PhotographerProfileActivity;
 
 
 /**
@@ -16,12 +15,22 @@ import in.capture.ui.PhotographerProfileActivity;
  *
  * TODO: Replace the implementation with code for your data type.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapterProfile extends RecyclerView.Adapter<RecyclerViewAdapterProfile.ViewHolder> {
 //
 
     Context context;
+    public Integer[] mThumbIds = {
+            R.drawable.a, R.drawable.c,
+            R.drawable.b, R.drawable.d,
+            R.drawable.f, R.drawable.e,
+            R.drawable.g, R.drawable.h,
+            R.drawable.i, R.drawable.j,
+            R.drawable.k, R.drawable.l,
+            R.drawable.m, R.drawable.a,
+            R.drawable.b
+    };
 
-    public RecyclerViewAdapter(Context context)
+    public RecyclerViewAdapterProfile(Context context)
     {
         this.context = context;
     }
@@ -29,16 +38,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_item, parent, false);
+                .inflate(R.layout.grid_image_item2, parent, false);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Intent intent = new Intent(context, PhotographerProfileActivity.class);
-                context.startActivity(intent);
-            }
-        });
+
         return new ViewHolder(view);
     }
 
@@ -47,6 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //        holder.mItem = mValues.get(position);
 //        holder.mIdView.setText(mValues.get(position).id);
 //        holder.mContentView.setText(mValues.get(position).content);
+       holder.imageView.setImageResource(mThumbIds[position]);
 
 
 
@@ -55,16 +59,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public int getItemCount() {
 //        return mValues.size();
-        return 10;
+        return mThumbIds.length;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView imageView;
 
 //        public DummyItem mItem;
 
         public ViewHolder(View view) {
             super(view);
 
+            imageView = (ImageView) view.findViewById(R.id.img);
         }
 
         @Override

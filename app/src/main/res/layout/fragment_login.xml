@@ -1,4 +1,4 @@
-<FrameLayout android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_margin="40dp">
+        android:layout_margin="30dp">
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -18,17 +18,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginTop="30dp">
         <android.support.design.widget.TextInputLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/input_username"
+                android:id="@+id/input_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="Email"
                 android:textSize="16sp"/>
 
         </android.support.design.widget.TextInputLayout>
@@ -47,6 +48,13 @@
 
         </android.support.design.widget.TextInputLayout>
 
+            <CheckBox
+                android:id="@+id/checkboxIsPhotographer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I am a Photographer"
+                android:layout_marginTop="5dp"/>
+
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -57,9 +65,11 @@
             >
 
             <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Login"
+                android:layout_marginTop="50dp"
                 android:background="@drawable/bg_button_state"
                 android:layout_gravity="right"
                 android:textSize="16sp"
@@ -68,6 +78,7 @@
                 android:layout_marginRight="10dp"/>
 
 <LinearLayout
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -103,4 +114,4 @@
     </LinearLayout>
 
 
-</FrameLayout>
+</ScrollView>

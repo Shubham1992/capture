@@ -1,14 +1,17 @@
 package in.capture.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
@@ -17,10 +20,30 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
-import in.capture.ImageAdapter;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import in.capture.adapter.ImageAdapter;
 import in.capture.R;
-import in.capture.RecyclerViewAdapter;
+import in.capture.adapter.PhotographersListRVAdapter;
+import in.capture.model.PhotoModel;
+import in.capture.model.PhotographerModel;
+import in.capture.utils.Constants;
+import in.capture.utils.Parser;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnClickLogin, SignupFragment.OnClickSignup{
 
@@ -78,8 +101,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                 tabLayout.setVisibility(View.GONE);
                 signupfragContainer.setVisibility(View.GONE);
                 gridView.setVisibility(View.VISIBLE);
+
+                getAllPhotos();
                 // Instance of ImageAdapter Class
-                gridView.setAdapter(new ImageAdapter(MainActivity.this));
+
             }
         });
 
@@ -95,12 +120,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                 tabLayout.setVisibility(View.GONE);
                 gridView.setVisibility(View.GONE);
                 signupfragContainer.setVisibility(View.VISIBLE);
-                getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new SignupFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new LoginFragment()).commit();
             }
         });
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.setOffscreenPageLimit(4);
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -119,6 +145,50 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
 
             }
         });
+
+
+
+    }
+
+    private void getAllPhotos() {
+
+        final ProgressDialog progressDialog =  new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        String url = Constants.urlAllPhotos;
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("response", response.toString());
+                        progressDialog.dismiss();
+                        ArrayList<PhotoModel> photoModels = Parser.parse_all_photos(response);
+
+                        gridView.setAdapter(new ImageAdapter(MainActivity.this, photoModels));
+                    }
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(stringRequest);
+
+
 
 
 
@@ -151,19 +221,34 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
     }
 
     @Override
+    public void loginsuccessful() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new MyProfileFragment()).commit();
+
+    }
+
+    @Override
     public void gotologin() {
         getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new LoginFragment()).commit();
     }
 
+    @Override
+    public void reload() {
+
+    }
+
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private RecyclerView rv;
+        private String url;
+        private SwipeRefreshLayout swiperefresh;
 
         public PlaceholderFragment() {
         }
@@ -184,13 +269,99 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.section_label);
-            rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-            RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getActivity());
-            rv.setAdapter(recyclerViewAdapter);
 
+            int sectionNo = getArguments().getInt(ARG_SECTION_NUMBER);
+
+
+            swiperefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
+            swiperefresh.setOnRefreshListener(this);
+
+            if(sectionNo == 1)
+            {
+               url = Constants.urlPhotographersList+"?category=wedding";
+             }
+            if(sectionNo == 2)
+            {
+                url = Constants.urlPhotographersList+"?category=fashion";
+            }
+            if(sectionNo == 3)
+            {
+                url = Constants.urlPhotographersList+"?category=product";
+            }
+            if(sectionNo == 4)
+            {
+                url = Constants.urlPhotographersList+"?category=other";
+            }
+
+            final String finalUrl = url;
+            if(url !=  null)
+                makeJsonRequest(url);
+
+
+            rv = (RecyclerView) rootView.findViewById(R.id.rv_portfolio);
+            rv.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             return rootView;
+        }
+
+
+
+        public void makeJsonRequest(String url) {
+
+            swiperefresh.setRefreshing(true);
+            final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+
+
+
+
+            JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Log.e("response", response.toString());
+                            progressDialog.dismiss();
+                            swiperefresh.setRefreshing(false);
+                            ArrayList<PhotographerModel>  photographerModelArrayList = Parser.parse_photographer_list_data(response);
+
+                            PhotographersListRVAdapter recyclerViewAdapter = new PhotographersListRVAdapter(getActivity(), photographerModelArrayList);
+                            rv.setAdapter(recyclerViewAdapter);
+
+                        }
+
+
+
+
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    return params;
+                }
+            };
+
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(stringRequest);
+
+        }
+
+
+
+        @Override
+        public void onRefresh() {
+
+
+            makeJsonRequest(url);
         }
     }
 
@@ -228,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                 case 2:
                     return "    PRODUCT    ";
                 case 3:
-                    return " MISCELLANEOUS ";
+                    return "     OTHERS    ";
             }
             return null;
         }
