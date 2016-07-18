@@ -62,7 +62,7 @@
                                 android:id="@+id/name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Shubham Goel"
+                                android:text=".............."
                                 android:paddingLeft="10dp"
                                 android:textSize="18dp"
                                 android:gravity="center"
@@ -95,7 +95,7 @@
                                     android:layout_marginTop="5dp"
                                     android:layout_marginLeft="10dp"
                                     android:textColor="@color/black"
-                                    android:text="Rs. 20000"
+                                    android:text="00"
                                     />
 
                                 <Button
@@ -122,7 +122,7 @@
                     android:layout_height="70dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/profile"
+                    android:src="@drawable/userplaceholder"
                     android:layout_gravity="center"
                     android:layout_marginBottom="25dp"
                     app:civ_border_color="@color/white"
@@ -149,7 +149,16 @@
     </android.support.design.widget.AppBarLayout>
 
 
-
+    <TextView
+        android:id="@+id/nophotos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No photographs to display yet"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
 

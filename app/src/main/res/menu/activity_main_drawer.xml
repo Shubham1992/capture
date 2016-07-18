@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:title="Home"
+            android:checked="true"/>
+        <item
+            android:id="@+id/browse"
+            android:title="Browse" />
+        <item
+            android:id="@+id/profile"
+            android:title="Profile" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/share"
+
+                android:title="Share" />
+            <item
+                android:id="@+id/rate"
+
+                android:title="Rate us" />
+            <item
+                android:id="@+id/mobile"
+
+                android:title="Contact us" />
+        </menu>
+    </item>
+
+</menu>

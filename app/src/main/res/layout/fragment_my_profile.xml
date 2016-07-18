@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     tools:context=".ui.PhotographerProfileActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:paddingTop="0dp"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         >
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
@@ -35,8 +35,9 @@
                     <ImageView
                         android:id="@+id/coverpic"
                         android:layout_width="match_parent"
-                        android:layout_height="140dp"
+                        android:layout_height="150dp"
                         android:scaleType="centerCrop"
+                        android:src="@drawable/backcover"
                         />
 
                     <LinearLayout
@@ -157,12 +158,21 @@
                     android:layout_height="70dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/profile"
+                    android:src="@drawable/userplaceholder"
                     android:layout_gravity="center"
                     android:layout_marginBottom="45dp"
                     app:civ_border_color="@color/white"
                     app:civ_border_width="2dp"
                     />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="5dp"
+                    android:layout_gravity="right"
+
+                    android:background="#15000000"
+                    android:src="@drawable/edit"/>
             </FrameLayout>
 
 
@@ -179,13 +189,21 @@
 
 
 
+    <TextView
+        android:id="@+id/nophotos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No photographs to display yet"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_portfolio"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F6F7F9"
-
-
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 

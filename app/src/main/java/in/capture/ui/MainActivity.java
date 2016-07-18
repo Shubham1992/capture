@@ -1,12 +1,18 @@
 package in.capture.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -45,7 +52,7 @@ import in.capture.model.PhotographerModel;
 import in.capture.utils.Constants;
 import in.capture.utils.Parser;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnClickLogin, SignupFragment.OnClickSignup{
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnClickLogin, SignupFragment.OnClickSignup, NavigationView.OnNavigationItemSelectedListener{
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -53,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
     ImageView imgPgraph, imgphoto, imgUser;
     private GridView gridView;
     private LinearLayout signupfragContainer;
+    private SharedPreferences sharedPreferences;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
 
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(8);
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -146,7 +155,14 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
             }
         });
 
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
+
+        if(getIntent().getBooleanExtra("gotoLogin", false) == true)
+        {
+            imgUser.performClick();
+        }
 
     }
 
@@ -222,8 +238,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
 
     @Override
     public void loginsuccessful() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new MyProfileFragment()).commit();
+        sharedPreferences = getSharedPreferences(Constants.SHAREDPREF, MODE_PRIVATE);
+        String userType = sharedPreferences.getString(Constants.USER_TYPE, Constants.PHOTOGRAPHER);
 
+            if(userType.equalsIgnoreCase(Constants.PHOTOGRAPHER))
+                getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new MyProfileFragment()).commit();
+            else
+                getSupportFragmentManager().beginTransaction().replace(R.id.signupfragContainer, new EndUserProfileFragment()).commit();
     }
 
     @Override
@@ -234,6 +255,49 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
     @Override
     public void reload() {
 
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        if(item.getItemId() == R.id.home)
+        {
+            imgPgraph.performClick();
+        }
+        else if(item.getItemId() == R.id.browse)
+        {
+            imgphoto.performClick();
+        }
+        else if(item.getItemId() == R.id.profile)
+        {
+            imgUser.performClick();
+        }
+        else if(item.getItemId() == R.id.share)
+        {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT,
+                    "Hey, checkout this app for photographers. Its awesome http://goo.gl/qBk8NZ");
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, "Share via"));
+        }
+        else if(item.getItemId() == R.id.rate){
+            String url = "http://goo.gl/qBk8NZ";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        }
+        else if(item.getItemId() == R.id.mobile){
+
+            Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+            startActivity(intent);
+        }
+
+        return true;
     }
 
 
@@ -249,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
         private RecyclerView rv;
         private String url;
         private SwipeRefreshLayout swiperefresh;
+        private TextView textViewNoDAta;
 
         public PlaceholderFragment() {
         }
@@ -273,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
             int sectionNo = getArguments().getInt(ARG_SECTION_NUMBER);
 
 
+            textViewNoDAta = (TextView) rootView.findViewById(R.id.tvnodata);
             swiperefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.swiperefresh);
             swiperefresh.setOnRefreshListener(this);
 
@@ -282,15 +348,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
              }
             if(sectionNo == 2)
             {
-                url = Constants.urlPhotographersList+"?category=fashion";
+                url = Constants.urlPhotographersList+"?category=fashion_and_portfolio";
             }
             if(sectionNo == 3)
             {
-                url = Constants.urlPhotographersList+"?category=product";
+                url = Constants.urlPhotographersList+"?category=commercial";
             }
             if(sectionNo == 4)
             {
-                url = Constants.urlPhotographersList+"?category=other";
+                url = Constants.urlPhotographersList+"?category=corporate_events";
+            }
+            if(sectionNo == 5)
+            {
+                url = Constants.urlPhotographersList+"?category=special_occassions";
+            }
+            if(sectionNo == 6)
+            {
+                url = Constants.urlPhotographersList+"?category=babies_and_kids";
+            }
+            if(sectionNo == 7)
+            {
+                url = Constants.urlPhotographersList+"?category=travel";
+            }
+            if(sectionNo == 8)
+            {
+                url = Constants.urlPhotographersList+"?category=nature";
             }
 
             final String finalUrl = url;
@@ -309,10 +391,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
         public void makeJsonRequest(String url) {
 
             swiperefresh.setRefreshing(true);
-            final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
 
+            textViewNoDAta.setText("Loading...");
 
 
 
@@ -322,13 +402,20 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                         public void onResponse(JSONObject response) {
 
                             Log.e("response", response.toString());
-                            progressDialog.dismiss();
                             swiperefresh.setRefreshing(false);
-                            ArrayList<PhotographerModel>  photographerModelArrayList = Parser.parse_photographer_list_data(response);
 
-                            PhotographersListRVAdapter recyclerViewAdapter = new PhotographersListRVAdapter(getActivity(), photographerModelArrayList);
-                            rv.setAdapter(recyclerViewAdapter);
+                            if (response.optString("success").equalsIgnoreCase("1")) {
+                                ArrayList<PhotographerModel>  photographerModelArrayList = Parser.parse_photographer_list_data(response);
 
+                                textViewNoDAta.setVisibility(View.GONE);
+                                rv.setVisibility(View.VISIBLE);
+                                PhotographersListRVAdapter recyclerViewAdapter = new PhotographersListRVAdapter(getActivity(), photographerModelArrayList);
+                                rv.setAdapter(recyclerViewAdapter);
+                            }else {
+                                textViewNoDAta.setVisibility(View.VISIBLE);
+                                textViewNoDAta.setText("Sorry,no photographers in this category yet");
+                                rv.setVisibility(View.GONE);
+                            }
                         }
 
 
@@ -338,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            progressDialog.dismiss();
+
                             Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
                         }
                     }) {
@@ -386,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 8;
         }
 
         @Override
@@ -395,11 +482,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnC
                 case 0:
                     return "    WEDDING    ";
                 case 1:
-                    return "    FASHION    ";
+                    return "    FASHION & PORTFOLIO    ";
                 case 2:
-                    return "    PRODUCT    ";
+                    return "    COMMERCIAL    ";
                 case 3:
-                    return "     OTHERS    ";
+                    return "     CORPORATE EVENTS    ";
+                case 4:
+                    return "     SPECIAL OCCASSIONS    ";
+                case 5:
+                    return "     BABIES & KIDS    ";
+                case 6:
+                    return "     TRAVEL    ";
+                case 7:
+                    return "     NATURE    ";
             }
             return null;
         }

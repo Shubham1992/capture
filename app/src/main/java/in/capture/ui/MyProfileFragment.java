@@ -6,12 +6,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -37,15 +41,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -53,6 +60,7 @@ import java.util.Map;
 
 import in.capture.R;
 import in.capture.adapter.RecyclerViewAdapterProfile;
+import in.capture.model.PhotoModel;
 import in.capture.model.PhotographerModel;
 import in.capture.utils.Constants;
 import in.capture.utils.Parser;
@@ -86,6 +94,10 @@ public class MyProfileFragment extends Fragment {
     private Bitmap profileBitmap;
     private TextView tvuploadPortfolioPic;
     private Bitmap portfolioBitmap;
+    private Bitmap bitmapMain;
+    private PhotographerModel photographerModel;
+    private RecyclerView rv;
+    private TextView textViewNoPhoto;
 
 
     public MyProfileFragment() {
@@ -129,7 +141,7 @@ public class MyProfileFragment extends Fragment {
 
         coverpic = (ImageView) view.findViewById(R.id.coverpic);
         profilePic = (ImageView) view.findViewById(R.id.profilepic);
-
+        textViewNoPhoto = (TextView) view.findViewById(R.id.nophotos);
         name = (TextView) view.findViewById(R.id.name);
         charges = (TextView) view.findViewById(R.id.charges);
         ImageView logout = (ImageView) view.findViewById(R.id.logout);
@@ -154,7 +166,7 @@ public class MyProfileFragment extends Fragment {
                     public boolean onMenuItemClick(MenuItem item) {
 
                         if(coverbitmap != null)
-                            uploadImage("cover", coverbitmap, 50);
+                            uploadImage("cover", coverbitmap, 70);
                         if(profileBitmap != null)
                             uploadImage("profile", profileBitmap, 40);
                         return true;
@@ -177,11 +189,10 @@ public class MyProfileFragment extends Fragment {
         });
 
         makeJsonRequest(Constants.urlGetPhotographer);
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_portfolio);
+        rv = (RecyclerView) view.findViewById(R.id.rv_portfolio);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
-        rv.setLayoutManager(layoutManager);RecyclerViewAdapterProfile recyclerViewAdapter = new RecyclerViewAdapterProfile(getActivity());
-        rv.setAdapter(recyclerViewAdapter);
+        rv.setLayoutManager(layoutManager);
 
         coverpic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,8 +233,11 @@ public class MyProfileFragment extends Fragment {
 
                         Log.e("response", response.toString());
                         progressDialog.dismiss();
-                        PhotographerModel photographerModel = Parser.parse_photographer_data(response);
+                        photographerModel = Parser.parse_photographer_data(response);
                         setPhotographerProfile(photographerModel);
+
+                        makePhotosRequest(Constants.urlPhotographerPhotos);
+
 
                     }
 
@@ -248,9 +262,56 @@ public class MyProfileFragment extends Fragment {
 
     }
 
+    private void makePhotosRequest(String url) {
+        final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        url = url +"?email="+ sharedPreferences.getString("email","");
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("response", response.toString());
+                        progressDialog.dismiss();
+                        if(response.optString("success").equalsIgnoreCase("1")) {
+
+                            rv.setVisibility(View.VISIBLE);
+                            textViewNoPhoto.setVisibility(View.GONE);
+                            ArrayList<PhotoModel> photoModels = Parser.parse_all_photos(response);
+                            RecyclerViewAdapterProfile recyclerViewAdapter = new RecyclerViewAdapterProfile(getActivity(), photoModels);
+                            rv.setAdapter(recyclerViewAdapter);
+                        }
+                        else {
+                          rv.setVisibility(View.GONE);
+                            textViewNoPhoto.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
     private void setPhotographerProfile(PhotographerModel photographerModel) {
-        Picasso.with(getActivity()).load(Constants.imageBaseUrl+photographerModel.getCoverpic()).into(coverpic);
-        Picasso.with(getActivity()).load(Constants.imageBaseUrl+photographerModel.getProfilepic()).into(profilePic);
+        Picasso.with(getActivity()).load(Constants.imageBaseUrl + photographerModel.getCoverpic()).placeholder(R.drawable.backcover).into(coverpic);
+        Picasso.with(getActivity()).load(Constants.imageBaseUrl + photographerModel.getProfilepic()).placeholder(R.drawable.userplaceholder).into(profilePic);
         name.setText(photographerModel.getName());
     }
 
@@ -261,17 +322,38 @@ public class MyProfileFragment extends Fragment {
         //Detects request codes
         if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                    null, null, null, null);
+            cursor.moveToFirst();
+            long size = cursor.getLong(cursor.getColumnIndex(OpenableColumns.SIZE));
+            long maxSize = 999999;
+            Log.e("size", "" + size);
+            cursor.close();
+
             try {
+                bitmapMain = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                Log.e("bitmap original", "" + bitmapMain.getByteCount());
+
+                if (size > maxSize) {
+                    bitmapMain = Bitmap.createScaledBitmap(bitmapMain, bitmapMain.getWidth()/5, bitmapMain.getHeight()/5, true);
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
                 if(clicked ==1){
-                coverbitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
-                coverpic.setImageBitmap(coverbitmap);
+                    coverbitmap = bitmapMain;
+                    coverpic.setImageBitmap(coverbitmap);
                 }else if (clicked == 2)
                 {
-                    profileBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                    profileBitmap = bitmapMain;
                     profilePic.setImageBitmap(profileBitmap);
                 }else if (clicked == 3)
                 {
-                    portfolioBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                    portfolioBitmap = bitmapMain;
                     AlertDialog.Builder alertadd = new AlertDialog.Builder(
                            getActivity());
                     LayoutInflater factory = LayoutInflater.from(getActivity());
@@ -284,21 +366,13 @@ public class MyProfileFragment extends Fragment {
                         public void onClick(DialogInterface dlg, int sumthin) {
 
                             if (portfolioBitmap != null)
-                            uploadImage("portfolio", portfolioBitmap, 60);
+                            uploadImage("portfolio", portfolioBitmap, 80);
                         }
                     });
 
                     alertadd.show();
                 }
 
-
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
         }
     }
 
@@ -331,7 +405,12 @@ public class MyProfileFragment extends Fragment {
                         //Disimissing the progress dialog
                         loading.dismiss();
                         //Showing toast message of the response
+                        if (imageType.contains("portfolio"))
+                        {
+                            makeJsonRequest(Constants.urlGetPhotographer);
+                        }
                         Toast.makeText(getActivity(), s , Toast.LENGTH_LONG).show();
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -342,6 +421,7 @@ public class MyProfileFragment extends Fragment {
 
                         //Showing toast
                         Toast.makeText(getActivity(), volleyError.getMessage().toString(), Toast.LENGTH_LONG).show();
+
                     }
                 }){
             @Override
@@ -355,14 +435,17 @@ public class MyProfileFragment extends Fragment {
                 timeStamp = timeStamp.replace(" ","").replace(".","_").trim();
 
                 if (imageType.contains("cover"))
-                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf(".")) + "coverpic.png";
+                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                            + timeStamp+"coverpic.png";
 
                 else if (imageType.contains("profile"))
-                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf(".")) + "profilepic.png";
+                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                            + timeStamp+"profilepic.png";
 
 
                 else if (imageType.contains("portfolio"))
-                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf(".")) +timeStamp+".png" ;
+                    name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                            +timeStamp+".png" ;
 
                 //Creating parameters
                 Map<String,String> params = new Hashtable<String, String>();
@@ -387,6 +470,8 @@ public class MyProfileFragment extends Fragment {
         //Adding request to the queue
         requestQueue.add(stringRequest);
     }
+
+
 
 
 

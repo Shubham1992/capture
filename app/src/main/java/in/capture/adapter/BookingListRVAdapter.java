@@ -13,9 +13,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 import in.capture.R;
+import in.capture.model.BookingModel;
 import in.capture.model.PhotographerModel;
 import in.capture.ui.BookingActivity;
 import in.capture.ui.PhotographerProfileActivity;
@@ -28,21 +31,21 @@ import in.capture.utils.Utility;
  *
  * TODO: Replace the implementation with code for your data type.
  */
-public class PhotographersListRVAdapter extends RecyclerView.Adapter<PhotographersListRVAdapter.ViewHolder> {
+public class BookingListRVAdapter extends RecyclerView.Adapter<BookingListRVAdapter.ViewHolder> {
 //
 
     Context context;
-    ArrayList<PhotographerModel> photographerModels = new ArrayList<>();
-    public PhotographersListRVAdapter(Context context, ArrayList<PhotographerModel> photographerModels)
+    ArrayList<BookingModel> arrayBookingList;
+    public BookingListRVAdapter(Context context, ArrayList<BookingModel> arrayBookingList)
     {
         this.context = context;
-        this.photographerModels = photographerModels;
+        this.arrayBookingList = arrayBookingList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_item, parent, false);
+                .inflate(R.layout.booking_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -50,11 +53,11 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        holder.name.setText(Utility.capitalizeFirstLetter(photographerModels.get(position).getName()));
-        holder.rate.setText(photographerModels.get(position).getRate());
-        Picasso.with(context).load(Constants.imageBaseUrl+photographerModels.get(position).getCoverpic()).placeholder(R.drawable.backcover).into(holder.coverPic);
-        Picasso.with(context).load(Constants.imageBaseUrl+photographerModels.get(position).getProfilepic()).placeholder(R.drawable.userplaceholder).into(holder.profilePic);
-        holder.mview.setOnClickListener(new View.OnClickListener() {
+        holder.name.setText(Utility.capitalizeFirstLetter(arrayBookingList.get(position).getPname()));
+        holder.rate.setText(arrayBookingList.get(position).getRate());
+        holder.time.setText("Booking for: "+arrayBookingList.get(position).getDate());
+        Picasso.with(context).load(Constants.imageBaseUrl + arrayBookingList.get(position).getImage()).placeholder(R.drawable.userplaceholder).into(holder.profilePic);
+   /*     holder.mview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -63,19 +66,7 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
                 context.startActivity(intent);
             }
         });
-        holder.book.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, BookingActivity.class);
-                intent.putExtra("email",photographerModels.get(position).getEmail());
-                intent.putExtra("name", photographerModels.get(position).getName());
-                intent.putExtra("rate",photographerModels.get(position).getRate());
-                intent.putExtra("location",photographerModels.get(position).getLocation());
-                intent.putExtra("image",photographerModels.get(position).getProfilepic());
-                context.startActivity(intent);
-            }
-        });
-
+*/
 
 
     }
@@ -83,14 +74,14 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
     @Override
     public int getItemCount() {
 //        return mValues.size();
-        return photographerModels.size();
+        return arrayBookingList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 //        public DummyItem mItem;
 
-        TextView name, rate; RatingBar vote;
+        TextView name, time, rate; RatingBar vote;
         ImageView profilePic, coverPic;
         Button book;
         View mview;
@@ -100,11 +91,9 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
             super(view);
             mview = view;
         name = (TextView) view.findViewById(R.id.name);
-        vote = (RatingBar) view.findViewById(R.id.vote);
-        rate = (TextView) view.findViewById(R.id.rate);
+        rate = (TextView) view.findViewById(R.id.charges);
         profilePic = (ImageView) view.findViewById(R.id.profilepic);
-        coverPic = (ImageView) view.findViewById(R.id.coverpic);
-        book = (Button) view.findViewById(R.id.btnbook);
+        time = (TextView) view.findViewById(R.id.time);
 
         }
 

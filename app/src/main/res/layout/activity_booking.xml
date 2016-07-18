@@ -69,6 +69,15 @@
                 android:textColor="#494949"
                 android:textStyle="bold"
                 />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/location"
+                android:text="Location"
+                android:paddingLeft="10dp"
+                android:textColor="#494949"
+                android:textStyle="normal"/>
+
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
@@ -98,10 +107,10 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/input_email"
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="Name"
                 android:textSize="16sp"/>
 
         </android.support.design.widget.TextInputLayout>

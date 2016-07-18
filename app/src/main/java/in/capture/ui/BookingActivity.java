@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,8 +50,12 @@ public class BookingActivity extends AppCompatActivity {
     private int minute;
     private int hour;
     private String photographerEmail, photographerRate;
-    private String photographerNam;
+    private String photographerName;
     private TextView name, rate;
+    private TextView location;
+    private String photographerLocation;
+    private String photographerImage;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +66,21 @@ public class BookingActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         photographerEmail = getIntent().getStringExtra("email");
         photographerRate = getIntent().getStringExtra("rate");
-        photographerNam = getIntent().getStringExtra("name");
+        photographerName = getIntent().getStringExtra("name");
+        photographerLocation = getIntent().getStringExtra("location");
+        photographerImage = getIntent().getStringExtra("image");
 
+        sharedPreferences = getSharedPreferences(Constants.SHAREDPREF, MODE_PRIVATE);
         name = (TextView) findViewById(R.id.name);
         rate = (TextView) findViewById(R.id.rate);
-        name.setText(photographerNam);
-        rate.setText(photographerRate);
+        location = (TextView) findViewById(R.id.location);
 
-        email = (EditText) findViewById(R.id.input_email);
+        name.setText(Utility.capitalizeFirstLetter(photographerName));
+        rate.setText("Rs. "+photographerRate);
+        location.setText(Utility.capitalizeFirstLetter(photographerLocation).replace("_and_", " & ").replace("_", " "));
+
+
+        email = (EditText) findViewById(R.id.input_name);
          phone = (EditText) findViewById(R.id.input_phone);
          adrs1 = (EditText) findViewById(R.id.input_adr_1);
          city = (EditText) findViewById(R.id.input_city);
@@ -80,11 +90,32 @@ public class BookingActivity extends AppCompatActivity {
 
         state = (Spinner) findViewById(R.id.state);
         List<String> listCategory = new ArrayList<>();
-        listCategory.add("NCR Region");
+        listCategory.add("NCRRegion");
         listCategory.add("Delhi");
-        listCategory.add("Uttar Pradesh");
-        listCategory.add("Maharashtra");
-        listCategory.add("Andra Pradesh");
+        listCategory.add("Ahmedabad");
+        listCategory.add("Gurgaon");
+        listCategory.add("Mumbai");
+        listCategory.add("Benguluru");
+        listCategory.add("Pune");
+        listCategory.add("Hyderabad");
+        listCategory.add("Kolkata");
+        listCategory.add("Surat");
+        listCategory.add("Chandigarh");
+        listCategory.add("Jaipur");
+        listCategory.add("Lucknow");
+        listCategory.add("Nagpur");
+        listCategory.add("Thiruvananthapuram");
+        listCategory.add("Goa");
+        listCategory.add("HimachalPradesh");
+        listCategory.add("Uttaranchal");
+        listCategory.add("WestBengal");
+        listCategory.add("Karnataka");
+        listCategory.add("Haryana");
+        listCategory.add("UttarPradesh");
+
+
+
+
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.simple_spinner_item, listCategory);
         state.setAdapter(arrayAdapter);
 
@@ -133,6 +164,9 @@ public class BookingActivity extends AppCompatActivity {
                 {
                     bookRequest();
                 }
+                else {
+                    Toast.makeText(BookingActivity.this, "Recheck the data you provided", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -148,7 +182,7 @@ public class BookingActivity extends AppCompatActivity {
     private boolean isValid() {
         if(email.getText().length()<5)
             return false;
-        if(phone.getText().length() <= 0)
+        if(phone.getText().length() < 10)
             return false;
         if(adrs1.getText().length()<= 0)
             return false;
@@ -173,7 +207,7 @@ public class BookingActivity extends AppCompatActivity {
         final JSONObject jsonObject = new JSONObject();
         try {
 
-            jsonObject.put("email", email.getText().toString().toLowerCase());
+            jsonObject.put("email", sharedPreferences.getString("email",""));
             jsonObject.put("phone", phone.getText().toString());
             jsonObject.put("address", adrs1.getText().toString().toLowerCase());
             jsonObject.put("city", city.getText().toString());
@@ -181,7 +215,10 @@ public class BookingActivity extends AppCompatActivity {
             jsonObject.put("state", state.getSelectedItem().toString().toLowerCase());
             jsonObject.put("date", date.getText().toString().toLowerCase());
             jsonObject.put("photographerEmail", photographerEmail.toLowerCase());
-            jsonObject.put("rate", rate);
+            jsonObject.put("rate", rate.getText().toString());
+            jsonObject.put("name", photographerName);
+            jsonObject.put("image", photographerImage);
+
 
 
 
@@ -203,7 +240,9 @@ public class BookingActivity extends AppCompatActivity {
                             Utility.showToast(BookingActivity.this, "Something went wrong");
                         else
                         {
-
+                            Toast.makeText(BookingActivity.this,
+                                    "Your request has been submited. We will contact you shortly", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
 
@@ -245,7 +284,7 @@ public class BookingActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker arg0, int arg1, int arg2, int arg3) {
-           date.setText(day+"/"+(month+1)+"/"+year);
+           date.setText(arg3+"/"+(arg2+1)+"/"+arg1);
 
         }
     };

@@ -1,0 +1,41 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f4f2f2"
+    tools:context="in.capture.ui.EndUserProfileFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:elevation="5dp"
+        android:text="Your Bookings"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="18sp">
+
+    </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You have not booked any photographer yet"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textStyle="bold"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvBookings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="#f4f2f2"
+        android:layout_marginTop="50dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+</FrameLayout>

@@ -1,13 +1,20 @@
 package in.capture.adapter;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
 import in.capture.R;
+import in.capture.model.PhotoModel;
+import in.capture.utils.Constants;
 
 
 /**
@@ -19,20 +26,13 @@ public class RecyclerViewAdapterProfile extends RecyclerView.Adapter<RecyclerVie
 //
 
     Context context;
-    public Integer[] mThumbIds = {
-            R.drawable.a, R.drawable.c,
-            R.drawable.b, R.drawable.d,
-            R.drawable.f, R.drawable.e,
-            R.drawable.g, R.drawable.h,
-            R.drawable.i, R.drawable.j,
-            R.drawable.k, R.drawable.l,
-            R.drawable.m, R.drawable.a,
-            R.drawable.b
-    };
+    ArrayList<PhotoModel> photoModels ;
 
-    public RecyclerViewAdapterProfile(Context context)
+    public RecyclerViewAdapterProfile(Context context, ArrayList<PhotoModel> photoModels)
+
     {
         this.context = context;
+        this.photoModels = photoModels;
     }
 
     @Override
@@ -46,12 +46,26 @@ public class RecyclerViewAdapterProfile extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        holder.mItem = mValues.get(position);
 //        holder.mIdView.setText(mValues.get(position).id);
 //        holder.mContentView.setText(mValues.get(position).content);
-       holder.imageView.setImageResource(mThumbIds[position]);
 
+        Picasso.with(context).load(Constants.imageBaseUrl + photoModels.get(position).getImage()).into(holder.imageView);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertadd = new AlertDialog.Builder(
+                        context);
+                LayoutInflater factory = LayoutInflater.from(context);
+                final View view = factory.inflate(R.layout.imagepopup2, null);
+                ImageView imView = (ImageView) view.findViewById(R.id.img);
+
+                Picasso.with(context).load(Constants.imageBaseUrl+photoModels.get(position).getImage()).into(imView);
+                alertadd.setView(view);
+                alertadd.show();
+            }
+        });
 
 
     }
@@ -59,7 +73,7 @@ public class RecyclerViewAdapterProfile extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
 //        return mValues.size();
-        return mThumbIds.length;
+        return photoModels.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

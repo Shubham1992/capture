@@ -2,7 +2,6 @@ package in.capture.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,15 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,6 +66,7 @@ public class SignupFragment extends Fragment {
     private EditText rates;
     private EditText location;
     private Spinner state;
+    private Spinner category2;
 
     public SignupFragment() {
         // Required empty public constructor
@@ -114,21 +111,45 @@ public class SignupFragment extends Fragment {
         photographerSpecificLayout = (LinearLayout)view.findViewById(R.id.photographerExtras);
 
         category = (Spinner) view.findViewById(R.id.category);
+        category2 = (Spinner) view.findViewById(R.id.category2);
         List<String> listCategory = new ArrayList<>();
         listCategory.add("Wedding");
-        listCategory.add("Fashion");
-        listCategory.add("Product");
-        listCategory.add("Other");
+        listCategory.add("Fashion & Portfolio");
+        listCategory.add("Commercial");
+        listCategory.add("Corporate Events");
+        listCategory.add("Special Occassions");
+        listCategory.add("Babies & Kids");
+        listCategory.add("Travel");
+
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), R.layout.simple_spinner_item, listCategory);
         category.setAdapter(arrayAdapter);
+        category2.setAdapter(arrayAdapter);
 
         state = (Spinner) view.findViewById(R.id.state);
         listCategory = new ArrayList<>();
         listCategory.add("NCR Region");
         listCategory.add("Delhi");
+        listCategory.add("Ahmedabad");
+        listCategory.add("Gurgaon");
+        listCategory.add("Mumbai");
+        listCategory.add("Benguluru");
+        listCategory.add("Pune");
+        listCategory.add("Hyderabad");
+        listCategory.add("Kolkata");
+        listCategory.add("Surat");
+        listCategory.add("Chandigarh");
+        listCategory.add("Jaipur");
+        listCategory.add("Lucknow");
+        listCategory.add("Nagpur");
+        listCategory.add("Thiruvananthapuram");
+        listCategory.add("Goa");
+        listCategory.add("Himachal Pradesh");
+        listCategory.add("Uttaranchal");
+        listCategory.add("West Bengal");
+        listCategory.add("Karnataka");
+        listCategory.add("Haryana");
         listCategory.add("Uttar Pradesh");
-        listCategory.add("Maharashtra");
-        listCategory.add("Andra Pradesh");
+
         arrayAdapter = new ArrayAdapter(getActivity(), R.layout.simple_spinner_item, listCategory);
         state.setAdapter(arrayAdapter);
 
@@ -154,7 +175,12 @@ public class SignupFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(isValid())
-                    signup();
+                {
+                    if(chkIsPhotographer.isChecked())
+                        signupPhotographer();
+                    else
+                        signupUser();
+                }
             }
         });
         gotologin = (TextView) view.findViewById(R.id.gotologin);
@@ -188,7 +214,7 @@ public class SignupFragment extends Fragment {
     }
 
 
-    public void signup() {
+    public void signupPhotographer() {
         String POST_URL = "http://captureapp.in/api/register_photographer.php/";
 
         final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
@@ -200,9 +226,9 @@ public class SignupFragment extends Fragment {
             jsonObject.put("name", name.getText().toString());
             jsonObject.put("email", email.getText().toString().toLowerCase());
             jsonObject.put("password", password.getText().toString());
-            jsonObject.put("category", category.getSelectedItem().toString().toLowerCase());
+            jsonObject.put("category", category.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and")+" , "+category2.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and"));
             jsonObject.put("rates", rates.getText().toString());
-            jsonObject.put("location", state.getSelectedItem().toString().toLowerCase());
+            jsonObject.put("location", state.getSelectedItem().toString().toLowerCase().replace(" ", "_"));
 
 
         } catch (JSONException e) {
@@ -224,6 +250,7 @@ public class SignupFragment extends Fragment {
                             SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHAREDPREF, Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("email", email.getText().toString().toLowerCase());
+                            editor.putString(Constants.USER_TYPE, Constants.PHOTOGRAPHER);
                             editor.commit();
 
                             ((OnClickSignup)getActivity()).gotologin();
@@ -257,6 +284,72 @@ public class SignupFragment extends Fragment {
         requestQueue.add(stringRequest);
 
     }
+    public void signupUser() {
+        String POST_URL = "http://captureapp.in/api/register_photo_user.php/";
 
+        final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
+        progressDialog.setMessage("Signing in");
+        progressDialog.show();
+
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", name.getText().toString());
+            jsonObject.put("email", email.getText().toString().toLowerCase());
+            jsonObject.put("password", password.getText().toString());
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(POST_URL, jsonObject ,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("response", response.toString());
+                        progressDialog.dismiss();
+                        if(response.optInt("success") == 0)
+                            Utility.showToast(getActivity(), "Email already exists");
+                        else
+                        {
+                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHAREDPREF, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("email", email.getText().toString().toLowerCase());
+                            editor.putString(Constants.USER_TYPE, Constants.ENDUSER);
+                            editor.commit();
+
+                            ((OnClickSignup)getActivity()).gotologin();
+                            ((OnClickSignup)getActivity()).reload();
+
+                        }
+
+
+                    }
+
+
+
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+
+    }
 
 }

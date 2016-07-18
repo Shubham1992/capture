@@ -11,6 +11,7 @@ public class PhotographerModel {
     private String rate;
     private String profilepic;
     private String coverpic;
+    private String location;
 
     public String getName() {
         return name;
@@ -58,5 +59,13 @@ public class PhotographerModel {
 
     public void setCoverpic(String coverpic) {
         this.coverpic = coverpic;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

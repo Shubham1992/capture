@@ -16,6 +16,11 @@ public class Constants {
     static public String urluploadProfile = "http://captureapp.in/api/update_profile_pic.php";
     static public String urluploadPortfolioPic = "http://captureapp.in/api/upload_image_portfolio.php";
     static  public String urlAllPhotos = "http://captureapp.in/api/get_all_pics.php";
+    static  public String urlPhotographerPhotos = "http://captureapp.in/api/get_photographer_photos.php";
+    static  public String urlBookings = "http://captureapp.in/api/get_all_booking.php";
+
+
+
 
 
 

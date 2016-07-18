@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ public class LoginFragment extends Fragment {
         }
         email = (EditText) view.findViewById(R.id.input_email);
         password = (EditText) view.findViewById(R.id.input_password);
+        final CheckBox checkBoxPhotographer = (CheckBox) view.findViewById(R.id.checkboxIsPhotographer);
 
         final Button btnlogin = (Button) view.findViewById(R.id.btnLogin);
         btnlogin.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +70,10 @@ public class LoginFragment extends Fragment {
 
                 if(email.getText().toString().length()>=5 && password.getText().length()>3)
                 {
-                    login();
+                    if(checkBoxPhotographer.isChecked())
+                        login();
+                    else
+                        loginUser();
                 }
             }
         });
@@ -116,6 +121,60 @@ public class LoginFragment extends Fragment {
                         {   SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("email",email.getText().toString());
                             editor.putString(Constants.USER_TYPE,Constants.PHOTOGRAPHER);
+                            editor.commit();
+
+                            ((OnClickLogin) getActivity()).loginsuccessful();
+
+                        }
+                    }
+
+
+
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+
+    }
+
+    public void loginUser() {
+        String GET_URL = "http://captureapp.in/api/login_photo_user.php?email="+email.getText().toString().toLowerCase()+"&password="+password.getText().toString();
+
+        final ProgressDialog progressDialog =  new ProgressDialog(getActivity());
+        progressDialog.setMessage("Signing in");
+        progressDialog.show();
+
+
+
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, GET_URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("response", response.toString());
+                        progressDialog.dismiss();
+                        if(response.optInt("success")== 0)
+                            Utility.showToast(getActivity(), "Email already exists");
+                        else
+                        {   SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("email",email.getText().toString());
+                            editor.putString(Constants.USER_TYPE,Constants.ENDUSER);
                             editor.commit();
 
                             ((OnClickLogin) getActivity()).loginsuccessful();
