@@ -206,7 +206,8 @@ public class SignupFragment extends Fragment {
     {
         if(name.getText().toString().length() < 2)
             return false;
-        if (email.getText().toString().length()<=5 )
+        if (email.getText().toString().length()<=5  ||
+                !email.getText().toString().contains("@") || !email.getText().toString().contains("."))
             return false;
         if(password.getText().toString().length() < 4)
             return false;

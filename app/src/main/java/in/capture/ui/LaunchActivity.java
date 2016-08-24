@@ -65,6 +65,7 @@ public class LaunchActivity extends AppCompatActivity {
                 Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
                 intent.putExtra("gotoLogin", true);
                 startActivity(intent);
+                finish();
             }
         });
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Adequate-ExtraLight.ttf");

@@ -116,7 +116,7 @@ public class LoginFragment extends Fragment {
                         Log.e("response", response.toString());
                         progressDialog.dismiss();
                         if(response.optInt("success")== 0)
-                            Utility.showToast(getActivity(), "Email already exists");
+                            Utility.showToast(getActivity(), "Could not login. Try again");
                         else
                         {   SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("email",email.getText().toString());

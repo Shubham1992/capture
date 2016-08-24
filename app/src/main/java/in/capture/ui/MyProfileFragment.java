@@ -313,6 +313,7 @@ public class MyProfileFragment extends Fragment {
         Picasso.with(getActivity()).load(Constants.imageBaseUrl + photographerModel.getCoverpic()).placeholder(R.drawable.backcover).into(coverpic);
         Picasso.with(getActivity()).load(Constants.imageBaseUrl + photographerModel.getProfilepic()).placeholder(R.drawable.userplaceholder).into(profilePic);
         name.setText(photographerModel.getName());
+        charges.setText(photographerModel.getRate());
     }
 
     @Override
