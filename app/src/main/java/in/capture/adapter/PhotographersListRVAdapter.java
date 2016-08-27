@@ -54,6 +54,8 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
         holder.rate.setText(photographerModels.get(position).getRate());
         Picasso.with(context).load(Constants.imageBaseUrl+photographerModels.get(position).getCoverpic()).placeholder(R.drawable.backcover).into(holder.coverPic);
         Picasso.with(context).load(Constants.imageBaseUrl+photographerModels.get(position).getProfilepic()).placeholder(R.drawable.userplaceholder).into(holder.profilePic);
+        holder.location.setText(photographerModels.get(position).getLocation());
+
         holder.mview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +89,7 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView location;
 
 //        public DummyItem mItem;
 
@@ -105,6 +108,7 @@ public class PhotographersListRVAdapter extends RecyclerView.Adapter<Photographe
         profilePic = (ImageView) view.findViewById(R.id.profilepic);
         coverPic = (ImageView) view.findViewById(R.id.coverpic);
         book = (Button) view.findViewById(R.id.btnbook);
+        location =(TextView) view.findViewById(R.id.location);
 
         }
 

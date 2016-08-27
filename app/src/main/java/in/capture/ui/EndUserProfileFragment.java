@@ -1,6 +1,7 @@
 package in.capture.ui;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class EndUserProfileFragment extends Fragment {
     private String mParam2;
     private SharedPreferences sharedPreferences;
     private RecyclerView rvBooking;
+    private View tvnodata;
 
 
     public EndUserProfileFragment() {
@@ -94,6 +96,7 @@ public class EndUserProfileFragment extends Fragment {
 
         rvBooking = (RecyclerView) view.findViewById(R.id.rvBookings);
         rvBooking.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tvnodata = view.findViewById(R.id.tvnodata);
         sharedPreferences = getActivity().getSharedPreferences(Constants.SHAREDPREF, Context.MODE_PRIVATE);
         String url = Constants.urlBookings+"?email="+sharedPreferences.getString("email","");
         makeJsonRequest(url);
@@ -102,6 +105,9 @@ public class EndUserProfileFragment extends Fragment {
 
     public void makeJsonRequest(String url) {
 
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Loading your bookings...");
+        progressDialog.show();
 
         JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -109,12 +115,16 @@ public class EndUserProfileFragment extends Fragment {
                     public void onResponse(JSONObject response) {
 
                         Log.e("response", response.toString());
-
+                        progressDialog.dismiss();
                         if (response.optString("success").equalsIgnoreCase("1")) {
                             rvBooking.setVisibility(View.VISIBLE);
                             ArrayList<BookingModel> bookingModelArrayList = Parser.parse_booking_list_data(response);
                             BookingListRVAdapter bookingListRVAdapter = new BookingListRVAdapter(getActivity(), bookingModelArrayList);
                             rvBooking.setAdapter(bookingListRVAdapter);
+                            if(bookingModelArrayList.size()>0)
+                            {
+                                tvnodata.setVisibility(View.GONE);
+                            }
                          }else {
 
                         }

@@ -69,7 +69,7 @@ public class Parser {
 
         ArrayList<PhotoModel> photoModels = new ArrayList<>();
 
-        JSONArray jsonArray = response.optJSONArray("photographs");
+        JSONArray jsonArray = response.optJSONArray("photos");
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.optJSONObject(i);
             PhotoModel photoModel = new PhotoModel();
@@ -90,10 +90,11 @@ public class Parser {
             JSONObject jsonObject = jsonArray.optJSONObject(i);
             BookingModel bookingModel = new BookingModel();
             bookingModel.setId(jsonObject.optString("id"));
-            bookingModel.setPname(jsonObject.optString("name"));
+            bookingModel.setPname(jsonObject.optString("photo_name"));
             bookingModel.setImage(jsonObject.optString("image"));
             bookingModel.setDate(jsonObject.optString("date"));
             bookingModel.setRate(jsonObject.optString("rate"));
+
 
             bookingModels.add(bookingModel);
         }

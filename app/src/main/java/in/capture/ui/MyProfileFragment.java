@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.BitmapCompat;
 import android.support.v7.app.AlertDialog;
@@ -41,9 +42,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.nispok.snackbar.SnackbarManager;
+import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -64,6 +68,7 @@ import in.capture.model.PhotoModel;
 import in.capture.model.PhotographerModel;
 import in.capture.utils.Constants;
 import in.capture.utils.Parser;
+import in.capture.utils.Utility;
 
 
 /**
@@ -348,10 +353,44 @@ public class MyProfileFragment extends Fragment {
                 if(clicked ==1){
                     coverbitmap = bitmapMain;
                     coverpic.setImageBitmap(coverbitmap);
+
+                    SnackbarManager.show(
+                            com.nispok.snackbar.Snackbar.with(getActivity())
+                                    .text("Upload on server")
+                                    .actionLabel("UPLOAD")
+                                    .actionListener(new ActionClickListener() {
+                                        @Override
+                                        public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
+
+                                            if(coverbitmap != null)
+                                                uploadImage("cover", coverbitmap, 70);
+                                            if(profileBitmap != null)
+                                                uploadImage("profile", profileBitmap, 40);
+                                        }
+                                    })
+                                    .duration(com.nispok.snackbar.Snackbar.SnackbarDuration.LENGTH_INDEFINITE)
+                    );
                 }else if (clicked == 2)
                 {
                     profileBitmap = bitmapMain;
                     profilePic.setImageBitmap(profileBitmap);
+                    SnackbarManager.show(
+                            com.nispok.snackbar.Snackbar.with(getActivity())
+                                    .text("Upload on server")
+                                    .actionLabel("UPLOAD")
+                                    .actionListener(new ActionClickListener() {
+                                        @Override
+                                        public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
+
+                                            if(coverbitmap != null)
+                                                uploadImage("cover", coverbitmap, 70);
+                                            if(profileBitmap != null)
+                                                uploadImage("profile", profileBitmap, 40);
+                                        }
+                                    })
+                                    .duration(com.nispok.snackbar.Snackbar.SnackbarDuration.LENGTH_INDEFINITE)
+                    );
+
                 }else if (clicked == 3)
                 {
                     portfolioBitmap = bitmapMain;
@@ -399,7 +438,81 @@ public class MyProfileFragment extends Fragment {
         else if (imageType.equalsIgnoreCase("portfolio"))
             UPLOAD_URL = Constants.urluploadPortfolioPic;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
+
+        //...............
+        final JSONObject jsonObject = new JSONObject();
+        try {
+
+            String image = getStringImage(bitmap, resize);
+
+            String name= null;
+            //Getting Image Name
+            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+            timeStamp = timeStamp.replace(" ","").replace(".","_").trim();
+
+            if (imageType.contains("cover"))
+                name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                        + timeStamp+"coverpic.png";
+
+            else if (imageType.contains("profile"))
+                name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                        + timeStamp+"profilepic.png";
+
+
+            else if (imageType.contains("portfolio"))
+                name = sharedPreferences.getString("email","").substring(0, sharedPreferences.getString("email","").indexOf("."))
+                        +timeStamp+".png" ;
+
+            jsonObject.put("coverpicName", name);
+            jsonObject.put("email", sharedPreferences.getString("email",""));
+            jsonObject.put("coverimage", image);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(UPLOAD_URL, jsonObject ,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("response", response.toString());
+                        loading.dismiss();
+
+                       Utility.showToast("Successfully uploaded", getActivity());
+                        coverbitmap = null;
+                        profileBitmap = null;
+
+                    }
+
+
+
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+
+        //...............
+
+
+
+        /*StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
@@ -452,24 +565,27 @@ public class MyProfileFragment extends Fragment {
                 Map<String,String> params = new Hashtable<String, String>();
 
                 //Adding parameters
-                params.put("coverpic", name);
+                params.put("coverpicName", name);
                 params.put("coverimage", image);
                 params.put("email", sharedPreferences.getString("email",""));
 
-                //returning parameters
+                if(params.size()>0)
                 return params;
+
+                return null;
+
             }
         };
 
         //Creating a Request Queue
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                200000,
+                0,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
+        stringRequest.setShouldCache(true);
         //Adding request to the queue
-        requestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);*/
     }
 
 

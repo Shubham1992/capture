@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.capture.R;
 import in.capture.utils.Constants;
 import in.capture.utils.Utility;
@@ -51,16 +55,20 @@ public class BookingActivity extends AppCompatActivity {
     private int hour;
     private String photographerEmail, photographerRate;
     private String photographerName;
-    private TextView name, rate;
+    private TextView photo_name, rate;
     private TextView location;
     private String photographerLocation;
     private String photographerImage;
     private SharedPreferences sharedPreferences;
+    private CircleImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -71,13 +79,14 @@ public class BookingActivity extends AppCompatActivity {
         photographerImage = getIntent().getStringExtra("image");
 
         sharedPreferences = getSharedPreferences(Constants.SHAREDPREF, MODE_PRIVATE);
-        name = (TextView) findViewById(R.id.name);
+        photo_name = (TextView) findViewById(R.id.name);
         rate = (TextView) findViewById(R.id.rate);
         location = (TextView) findViewById(R.id.location);
-
-        name.setText(Utility.capitalizeFirstLetter(photographerName));
+        profilePic = (CircleImageView) findViewById(R.id.profilepic);
+        photo_name.setText(Utility.capitalizeFirstLetter(photographerName));
         rate.setText("Rs. "+photographerRate);
         location.setText(Utility.capitalizeFirstLetter(photographerLocation).replace("_and_", " & ").replace("_", " "));
+        Picasso.with(this).load(Constants.imageBaseUrl+photographerImage).into(profilePic);
 
 
         email = (EditText) findViewById(R.id.input_name);
@@ -208,6 +217,7 @@ public class BookingActivity extends AppCompatActivity {
         try {
 
             jsonObject.put("email", sharedPreferences.getString("email",""));
+            jsonObject.put("name", email.getText().toString());
             jsonObject.put("phone", phone.getText().toString());
             jsonObject.put("address", adrs1.getText().toString().toLowerCase());
             jsonObject.put("city", city.getText().toString());
@@ -216,8 +226,9 @@ public class BookingActivity extends AppCompatActivity {
             jsonObject.put("date", date.getText().toString().toLowerCase());
             jsonObject.put("photographerEmail", photographerEmail.toLowerCase());
             jsonObject.put("rate", rate.getText().toString());
-            jsonObject.put("name", photographerName);
+            jsonObject.put("photo_name", photographerName);
             jsonObject.put("image", photographerImage);
+
 
 
 

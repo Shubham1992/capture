@@ -8,6 +8,9 @@
     tools:context="in.capture.ui.BookingActivity"
     android:background="#58e4e4e4">
 
+    <include layout="@layout/toolbar"
+        android:id="@+id/toolbar"></include>
+
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,7 +43,7 @@
             android:id="@+id/profilepic"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/profile"
+            android:src="@drawable/userplaceholder"
             android:layout_marginBottom="25dp"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp"

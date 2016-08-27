@@ -227,7 +227,7 @@ public class SignupFragment extends Fragment {
             jsonObject.put("name", name.getText().toString());
             jsonObject.put("email", email.getText().toString().toLowerCase());
             jsonObject.put("password", password.getText().toString());
-            jsonObject.put("category", category.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and")+" , "+category2.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and"));
+            jsonObject.put("category", category.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and")+", "+category2.getSelectedItem().toString().toLowerCase().replace(" ","_").replace("&","and"));
             jsonObject.put("rates", rates.getText().toString());
             jsonObject.put("location", state.getSelectedItem().toString().toLowerCase().replace(" ", "_"));
 
